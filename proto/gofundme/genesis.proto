@@ -1,0 +1,17 @@
+syntax = "proto3";
+package cosmonaut.gofundme.gofundme;
+
+import "gogoproto/gogo.proto";
+import "gofundme/params.proto";
+import "gofundme/gofundme.proto";
+// this line is used by starport scaffolding # genesis/proto/import
+
+option go_package = "github.com/cosmonaut/gofundme/x/gofundme/types";
+
+// GenesisState defines the gofundme module's genesis state.
+message GenesisState {
+  Params params = 1 [(gogoproto.nullable) = false];
+  repeated Gofundme gofundmeList = 2 [(gogoproto.nullable) = false];
+  uint64 gofundmeCount = 3;
+  // this line is used by starport scaffolding # genesis/proto/state
+}

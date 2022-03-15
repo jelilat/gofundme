@@ -1,0 +1,58 @@
+syntax = "proto3";
+package cosmonaut.gofundme.gofundme;
+
+import "gogoproto/gogo.proto";
+import "google/api/annotations.proto";
+import "cosmos/base/query/v1beta1/pagination.proto";
+import "gofundme/params.proto";
+import "gofundme/gofundme.proto";
+// this line is used by starport scaffolding # 1
+
+option go_package = "github.com/cosmonaut/gofundme/x/gofundme/types";
+
+// Query defines the gRPC querier service.
+service Query {
+  // Parameters queries the parameters of the module.
+  rpc Params(QueryParamsRequest) returns (QueryParamsResponse) {
+    option (google.api.http).get = "/cosmonaut/gofundme/gofundme/params";
+  }
+  // Queries a Gofundme by id.
+	rpc Gofundme(QueryGetGofundmeRequest) returns (QueryGetGofundmeResponse) {
+		option (google.api.http).get = "/cosmonaut/gofundme/gofundme/gofundme/{id}";
+	}
+
+	// Queries a list of Gofundme items.
+	rpc GofundmeAll(QueryAllGofundmeRequest) returns (QueryAllGofundmeResponse) {
+		option (google.api.http).get = "/cosmonaut/gofundme/gofundme/gofundme";
+	}
+
+// this line is used by starport scaffolding # 2
+}
+
+// QueryParamsRequest is request type for the Query/Params RPC method.
+message QueryParamsRequest {}
+
+// QueryParamsResponse is response type for the Query/Params RPC method.
+message QueryParamsResponse {
+  // params holds all the parameters of this module.
+  Params params = 1 [(gogoproto.nullable) = false];
+}
+
+message QueryGetGofundmeRequest {
+	uint64 id = 1;
+}
+
+message QueryGetGofundmeResponse {
+	Gofundme Gofundme = 1 [(gogoproto.nullable) = false];
+}
+
+message QueryAllGofundmeRequest {
+	cosmos.base.query.v1beta1.PageRequest pagination = 1;
+}
+
+message QueryAllGofundmeResponse {
+	repeated Gofundme Gofundme = 1 [(gogoproto.nullable) = false];
+	cosmos.base.query.v1beta1.PageResponse pagination = 2;
+}
+
+// this line is used by starport scaffolding # 3

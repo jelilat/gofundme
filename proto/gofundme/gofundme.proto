@@ -1,0 +1,17 @@
+syntax = "proto3";
+package cosmonaut.gofundme.gofundme;
+
+option go_package = "github.com/cosmonaut/gofundme/x/gofundme/types";
+
+message Gofundme {
+  uint64 id = 1;
+  string creator = 2; 
+  uint64 goal = 3; 
+  string start = 4; 
+  string end = 5; 
+  uint64 totaldonations = 6; 
+  string claim = 7; 
+  repeated string donation = 8; 
+  repeated string donor = 9; 
+  
+}
