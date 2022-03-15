@@ -24,7 +24,15 @@ var (
 )
 
 const (
-// this line is used by starport scaffolding # simapp/module/const
+	opWeightMsgCreateGofundme = "op_weight_msg_create_chain"
+	// TODO: Determine the simulation weight value
+	defaultWeightMsgCreateGofundme int = 100
+
+	opWeightMsgDonateFund = "op_weight_msg_create_chain"
+	// TODO: Determine the simulation weight value
+	defaultWeightMsgDonateFund int = 100
+
+	// this line is used by starport scaffolding # simapp/module/const
 )
 
 // GenerateGenesisState creates a randomized GenState of the module
@@ -56,6 +64,28 @@ func (am AppModule) RegisterStoreDecoder(_ sdk.StoreDecoderRegistry) {}
 // WeightedOperations returns the all the gov module operations with their respective weights.
 func (am AppModule) WeightedOperations(simState module.SimulationState) []simtypes.WeightedOperation {
 	operations := make([]simtypes.WeightedOperation, 0)
+
+	var weightMsgCreateGofundme int
+	simState.AppParams.GetOrGenerate(simState.Cdc, opWeightMsgCreateGofundme, &weightMsgCreateGofundme, nil,
+		func(_ *rand.Rand) {
+			weightMsgCreateGofundme = defaultWeightMsgCreateGofundme
+		},
+	)
+	operations = append(operations, simulation.NewWeightedOperation(
+		weightMsgCreateGofundme,
+		gofundmesimulation.SimulateMsgCreateGofundme(am.accountKeeper, am.bankKeeper, am.keeper),
+	))
+
+	var weightMsgDonateFund int
+	simState.AppParams.GetOrGenerate(simState.Cdc, opWeightMsgDonateFund, &weightMsgDonateFund, nil,
+		func(_ *rand.Rand) {
+			weightMsgDonateFund = defaultWeightMsgDonateFund
+		},
+	)
+	operations = append(operations, simulation.NewWeightedOperation(
+		weightMsgDonateFund,
+		gofundmesimulation.SimulateMsgDonateFund(am.accountKeeper, am.bankKeeper, am.keeper),
+	))
 
 	// this line is used by starport scaffolding # simapp/module/operation
 

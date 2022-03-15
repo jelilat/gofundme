@@ -7,7 +7,28 @@ option go_package = "github.com/cosmonaut/gofundme/x/gofundme/types";
 
 // Msg defines the Msg service.
 service Msg {
-    // this line is used by starport scaffolding # proto/tx/rpc
+      rpc CreateGofundme(MsgCreateGofundme) returns (MsgCreateGofundmeResponse);
+  rpc DonateFund(MsgDonateFund) returns (MsgDonateFundResponse);
+// this line is used by starport scaffolding # proto/tx/rpc
+}
+
+message MsgCreateGofundme {
+  string creator = 1;
+  uint64 goal = 2;
+  string start = 3;
+  string end = 4;
+}
+
+message MsgCreateGofundmeResponse {
+}
+
+message MsgDonateFund {
+  string creator = 1;
+  uint64 id = 2;
+  string donation = 3;
+}
+
+message MsgDonateFundResponse {
 }
 
 // this line is used by starport scaffolding # proto/tx/message

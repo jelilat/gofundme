@@ -30,6 +30,8 @@ func GetTxCmd() *cobra.Command {
 		RunE:                       client.ValidateCmd,
 	}
 
+	cmd.AddCommand(CmdCreateGofundme())
+	cmd.AddCommand(CmdDonateFund())
 	// this line is used by starport scaffolding # 1
 
 	return cmd
