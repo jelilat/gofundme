@@ -51,7 +51,7 @@ The Creator can create a campaign and also donate to the campaign. However, the 
 A Donor donates to a crowdfunding campaign with the following information:
 
 * `id` of the campaign
-* `donation`
+* `donation` amount
 
 If the goal of the campaign is not met before the `end` date, the `Donor`s can withdraw their `donation`s from the campaign.
 
@@ -94,7 +94,7 @@ Make `donor` and `donation` variables an array of string using the `:array.strin
 
 Use the `--no-message` flag to disable CRUD messages in the scaffold.
 
-The data you store in an array-like data structure are the `gofundme` campaigns. You can see the parameters defined above in the `Gofundme` message in proto/gofundme/gofundme.proto:
+The data you store in an array-like data structure are the `gofundme` campaigns. You can see the parameters defined above in the `Gofundme` message in `proto/gofundme/gofundme.proto`:
 
 ```
 message Gofundme {
@@ -123,20 +123,20 @@ git commit -m "Scaffold gofundme and list modules"
 In order to create a gofundme app, you need the following messages:
 
 * Create Gofundme
-* Donate to Gofundme
+* Donate Fund
 * Withdraw Donation
 
-You can use the `starport scaffold message` command to create each of the messages. Define the details of each message when you scaffold them.
+You can use the `starport scaffold message` command to create each of the messages. Meke sure you define the details of each message when you scaffold them.
 
 Create the messages one at a time with the following application logic.
 
 ### Create Gofundme
 
-For a gofundme, the initial message handles the transaction when a cosmonaut creates a gofundme campaign.
+For a gofundme, the initial message handles the transaction when an account (or user) creates a gofundme campaign.
 
-The cosmonaut needs a certain amount of funds and is requesting donations from other cosmonauts.
+The user needs a certain amount of funds and is requesting donations from other users.
 
-The first message is the create-gofundme message that requires these input parameters:
+The first message is the `create-gofundme` message, which requires the following input parameters:
 
 * `goal`: The amount of funds the cosmonaut is requesting
 * `start`: The start date of the gofundme campaign
@@ -164,7 +164,7 @@ import (
 func (k msgServer) CreateGofundme(goCtx context.Context, msg *types.MsgCreateGofundme) (*types.MsgCreateGofundmeResponse, error) {
 	ctx := sdk.UnwrapSDKContext(goCtx)
 
-	// Start a gofundme with the following user input
+	// Start a gofundme with the following user inputs
 	var gofundme = types.Gofundme{
 		Creator: msg.Creator,
 		Goal:    msg.Goal,
@@ -263,7 +263,7 @@ Query your gofundme campaign:
 ```
 gofundmed query gofundme list-gofundme
 ```
-The output should be:
+The output should be something like this:
 ```
 Gofundme:
 - claim: "no"
@@ -281,7 +281,7 @@ pagination:
 ```
 If you encounter any error, you can restart your chain and try again.
 
-You can stop the blockchain again with `CTRL+C` or `CMND+C`.
+You can stop the blockchain again with `CTRL+C` or `CMD+C`.
 
 This is a good time to add your advancements to git:
 
@@ -294,7 +294,7 @@ git commit -m "Scaffold create-gofundme message"
 
 After a gofundme campaign is created, other cosmonauts can donate to it. 
 
-The next message is the `donate-fund` message that requires these input parameters:
+The next message is the `donate-fund` message, which requires the following input parameters:
 
 * `id`: The id of the gofundme campaign
 * `donation`: The amount of funds an account is donating
@@ -322,6 +322,7 @@ import (
 func (k msgServer) DonateFund(goCtx context.Context, msg *types.MsgDonateFund) (*types.MsgDonateFundResponse, error) {
 	ctx := sdk.UnwrapSDKContext(goCtx)
 
+    //Find a gofundme campaign using its id
 	gofundme, found := k.GetGofundme(ctx, msg.Id)
 	if !found {
 		return nil, sdkerrors.Wrapf(sdkerrors.ErrKeyNotFound, "gofundme campaign with id %s not found", msg.Id)
@@ -373,7 +374,7 @@ func (k msgServer) DonateFund(goCtx context.Context, msg *types.MsgDonateFund) (
 	return &types.MsgDonateFundResponse{}, nil
 }
 ```
-The module uses the `SendCoinsFromAccountToModule` function of `bankKeeper`. Add this `SendCoinsFromAccountToModule` to the `x/gofundme/types/expected_keepers.go` file to get rid of the error.
+The module uses the `SendCoinsFromAccountToModule` function of `bankKeeper`. Add this `SendCoinsFromAccountToModule` function to the `x/gofundme/types/expected_keepers.go` file to get rid of the error.
 
 ```golang
 type BankKeeper interface {
@@ -381,7 +382,7 @@ type BankKeeper interface {
 	SendCoinsFromAccountToModule(ctx sdk.Context, senderAddr sdk.AccAddress, recipientModule string, amt sdk.Coins) error
 }
 ```
-Start the blockchain and use the two commands you already have available:
+Restart the blockchain and use the two commands you already have available:
 
 ```
 starport chain serve -r
@@ -436,7 +437,7 @@ git commit -m "Add donate-fund message"
 
 ### Withdraw Donation Message
 
-After the campaign is over, you can withdraw the funds. If the campaign goal is met, the funds are transferred to the creator of the campaign. Otherwise, donors can initiate a refund.
+After the campaign is over, you can withdraw the donations. If the campaign goal is met, the creator of the campaign can withdraw the donations. Otherwise, donors can initiate a refund.
 
 Scaffold the message `withdraw-donation` with the following command:
 ```
@@ -539,7 +540,7 @@ func (k msgServer) WithdrawDonation(goCtx context.Context, msg *types.MsgWithdra
 
 ```
 
-The module uses the `SendCoinsFromModuleToAccount` function of `bankKeeper`. Add this `SendCoinsFromModuleToAccount` to the `x/gofundme/types/expected_keepers.go` file to get rid of the error.
+The module uses the `SendCoinsFromModuleToAccount` function of `bankKeeper`. Add this `SendCoinsFromModuleToAccount` function to the `x/gofundme/types/expected_keepers.go` file to get rid of the error.
 
 ```golang
 type BankKeeper interface {
@@ -548,7 +549,7 @@ type BankKeeper interface {
 	SendCoinsFromModuleToAccount(ctx sdk.Context, senderModule string, recipientAddr sdk.AccAddress, amt sdk.Coins) error
 }
 ```
-Now, start the blockchain again to test all your code.
+Now, restart the blockchain again to test all your code.
 ```
 starport chain serve -r
 ```
@@ -612,9 +613,9 @@ pagination:
 ```
 You see that `claim` is now `yes`. If you try withdrawing your donations again, you will get an error.
 
-Play around with it and you'll see how our validations work.
+Play around with it a little more to see how the validations work.
 
-Consider again updating your local repository with a git commit. After you test and use your loan module, consider publishing your code to a public repository for others to see your accomplishments.
+Update your local repository again with a git commit. After you test and use your loan module, consider publishing your code to a public repository for others to see your accomplishments.
 
 ```
 git add .
@@ -635,5 +636,5 @@ You executed commands and updated files to:
 * Use an escrow module account
 * Add application messages for a gofundme system
     * Create Gofundme
-    * Donate to Gofundme
+    * Donate Fund
     * Withdraw Donation
