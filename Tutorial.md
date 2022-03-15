@@ -232,6 +232,11 @@ func (msg *MsgCreateGofundme) ValidateBasic() error {
 		return sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, "end date must be in the future")
 	}
 
+    //Ensure that start date is not in the past
+	if start.Before(blockTime) {
+		return sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, "start date cannot be in the past")
+	}
+
 	// Ensure that start date is before end date
 	if start.After(end) {
 		return sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, "start date must be before end date")
