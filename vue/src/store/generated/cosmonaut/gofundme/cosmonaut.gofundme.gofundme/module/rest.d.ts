@@ -14,6 +14,7 @@ export interface GofundmeGofundme {
 }
 export declare type GofundmeMsgCreateGofundmeResponse = object;
 export declare type GofundmeMsgDonateFundResponse = object;
+export declare type GofundmeMsgWithdrawDonationResponse = object;
 /**
  * Params defines the parameters for the module.
  */

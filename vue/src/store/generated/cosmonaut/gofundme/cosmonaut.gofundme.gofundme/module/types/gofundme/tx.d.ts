@@ -15,6 +15,12 @@ export interface MsgDonateFund {
 }
 export interface MsgDonateFundResponse {
 }
+export interface MsgWithdrawDonation {
+    creator: string;
+    id: number;
+}
+export interface MsgWithdrawDonationResponse {
+}
 export declare const MsgCreateGofundme: {
     encode(message: MsgCreateGofundme, writer?: Writer): Writer;
     decode(input: Reader | Uint8Array, length?: number): MsgCreateGofundme;
@@ -43,17 +49,33 @@ export declare const MsgDonateFundResponse: {
     toJSON(_: MsgDonateFundResponse): unknown;
     fromPartial(_: DeepPartial<MsgDonateFundResponse>): MsgDonateFundResponse;
 };
+export declare const MsgWithdrawDonation: {
+    encode(message: MsgWithdrawDonation, writer?: Writer): Writer;
+    decode(input: Reader | Uint8Array, length?: number): MsgWithdrawDonation;
+    fromJSON(object: any): MsgWithdrawDonation;
+    toJSON(message: MsgWithdrawDonation): unknown;
+    fromPartial(object: DeepPartial<MsgWithdrawDonation>): MsgWithdrawDonation;
+};
+export declare const MsgWithdrawDonationResponse: {
+    encode(_: MsgWithdrawDonationResponse, writer?: Writer): Writer;
+    decode(input: Reader | Uint8Array, length?: number): MsgWithdrawDonationResponse;
+    fromJSON(_: any): MsgWithdrawDonationResponse;
+    toJSON(_: MsgWithdrawDonationResponse): unknown;
+    fromPartial(_: DeepPartial<MsgWithdrawDonationResponse>): MsgWithdrawDonationResponse;
+};
 /** Msg defines the Msg service. */
 export interface Msg {
     CreateGofundme(request: MsgCreateGofundme): Promise<MsgCreateGofundmeResponse>;
-    /** this line is used by starport scaffolding # proto/tx/rpc */
     DonateFund(request: MsgDonateFund): Promise<MsgDonateFundResponse>;
+    /** this line is used by starport scaffolding # proto/tx/rpc */
+    WithdrawDonation(request: MsgWithdrawDonation): Promise<MsgWithdrawDonationResponse>;
 }
 export declare class MsgClientImpl implements Msg {
     private readonly rpc;
     constructor(rpc: Rpc);
     CreateGofundme(request: MsgCreateGofundme): Promise<MsgCreateGofundmeResponse>;
     DonateFund(request: MsgDonateFund): Promise<MsgDonateFundResponse>;
+    WithdrawDonation(request: MsgWithdrawDonation): Promise<MsgWithdrawDonationResponse>;
 }
 interface Rpc {
     request(service: string, method: string, data: Uint8Array): Promise<Uint8Array>;

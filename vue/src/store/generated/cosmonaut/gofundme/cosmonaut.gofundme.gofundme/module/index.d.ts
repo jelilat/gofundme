@@ -3,6 +3,7 @@ import { Registry, OfflineSigner, EncodeObject } from "@cosmjs/proto-signing";
 import { Api } from "./rest";
 import { MsgCreateGofundme } from "./types/gofundme/tx";
 import { MsgDonateFund } from "./types/gofundme/tx";
+import { MsgWithdrawDonation } from "./types/gofundme/tx";
 export declare const MissingWalletError: Error;
 export declare const registry: Registry;
 interface TxClientOptions {
@@ -16,6 +17,7 @@ declare const txClient: (wallet: OfflineSigner, { addr: addr }?: TxClientOptions
     signAndBroadcast: (msgs: EncodeObject[], { fee, memo }?: SignAndBroadcastOptions) => any;
     msgCreateGofundme: (data: MsgCreateGofundme) => EncodeObject;
     msgDonateFund: (data: MsgDonateFund) => EncodeObject;
+    msgWithdrawDonation: (data: MsgWithdrawDonation) => EncodeObject;
 }>;
 interface QueryClientOptions {
     addr: string;

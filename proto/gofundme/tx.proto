@@ -9,6 +9,7 @@ option go_package = "github.com/cosmonaut/gofundme/x/gofundme/types";
 service Msg {
       rpc CreateGofundme(MsgCreateGofundme) returns (MsgCreateGofundmeResponse);
   rpc DonateFund(MsgDonateFund) returns (MsgDonateFundResponse);
+  rpc WithdrawDonation(MsgWithdrawDonation) returns (MsgWithdrawDonationResponse);
 // this line is used by starport scaffolding # proto/tx/rpc
 }
 
@@ -29,6 +30,14 @@ message MsgDonateFund {
 }
 
 message MsgDonateFundResponse {
+}
+
+message MsgWithdrawDonation {
+  string creator = 1;
+  uint64 id = 2;
+}
+
+message MsgWithdrawDonationResponse {
 }
 
 // this line is used by starport scaffolding # proto/tx/message

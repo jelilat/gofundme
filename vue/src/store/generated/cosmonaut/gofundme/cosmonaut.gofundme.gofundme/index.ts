@@ -231,6 +231,21 @@ export default {
 				}
 			}
 		},
+		async sendMsgWithdrawDonation({ rootGetters }, { value, fee = [], memo = '' }) {
+			try {
+				const txClient=await initTxClient(rootGetters)
+				const msg = await txClient.msgWithdrawDonation(value)
+				const result = await txClient.signAndBroadcast([msg], {fee: { amount: fee, 
+	gas: "200000" }, memo})
+				return result
+			} catch (e) {
+				if (e == MissingWalletError) {
+					throw new SpVuexError('TxClient:MsgWithdrawDonation:Init', 'Could not initialize signing client. Wallet is required.')
+				}else{
+					throw new SpVuexError('TxClient:MsgWithdrawDonation:Send', 'Could not broadcast Tx: '+ e.message)
+				}
+			}
+		},
 		
 		async MsgCreateGofundme({ rootGetters }, { value }) {
 			try {
@@ -256,6 +271,20 @@ export default {
 					throw new SpVuexError('TxClient:MsgDonateFund:Init', 'Could not initialize signing client. Wallet is required.')
 				}else{
 					throw new SpVuexError('TxClient:MsgDonateFund:Create', 'Could not create message: ' + e.message)
+					
+				}
+			}
+		},
+		async MsgWithdrawDonation({ rootGetters }, { value }) {
+			try {
+				const txClient=await initTxClient(rootGetters)
+				const msg = await txClient.msgWithdrawDonation(value)
+				return msg
+			} catch (e) {
+				if (e == MissingWalletError) {
+					throw new SpVuexError('TxClient:MsgWithdrawDonation:Init', 'Could not initialize signing client. Wallet is required.')
+				}else{
+					throw new SpVuexError('TxClient:MsgWithdrawDonation:Create', 'Could not create message: ' + e.message)
 					
 				}
 			}

@@ -32,6 +32,10 @@ const (
 	// TODO: Determine the simulation weight value
 	defaultWeightMsgDonateFund int = 100
 
+	opWeightMsgWithdrawDonation = "op_weight_msg_create_chain"
+	// TODO: Determine the simulation weight value
+	defaultWeightMsgWithdrawDonation int = 100
+
 	// this line is used by starport scaffolding # simapp/module/const
 )
 
@@ -85,6 +89,17 @@ func (am AppModule) WeightedOperations(simState module.SimulationState) []simtyp
 	operations = append(operations, simulation.NewWeightedOperation(
 		weightMsgDonateFund,
 		gofundmesimulation.SimulateMsgDonateFund(am.accountKeeper, am.bankKeeper, am.keeper),
+	))
+
+	var weightMsgWithdrawDonation int
+	simState.AppParams.GetOrGenerate(simState.Cdc, opWeightMsgWithdrawDonation, &weightMsgWithdrawDonation, nil,
+		func(_ *rand.Rand) {
+			weightMsgWithdrawDonation = defaultWeightMsgWithdrawDonation
+		},
+	)
+	operations = append(operations, simulation.NewWeightedOperation(
+		weightMsgWithdrawDonation,
+		gofundmesimulation.SimulateMsgWithdrawDonation(am.accountKeeper, am.bankKeeper, am.keeper),
 	))
 
 	// this line is used by starport scaffolding # simapp/module/operation

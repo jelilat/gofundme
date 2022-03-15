@@ -6,11 +6,13 @@ import { Registry, OfflineSigner, EncodeObject, DirectSecp256k1HdWallet } from "
 import { Api } from "./rest";
 import { MsgCreateGofundme } from "./types/gofundme/tx";
 import { MsgDonateFund } from "./types/gofundme/tx";
+import { MsgWithdrawDonation } from "./types/gofundme/tx";
 
 
 const types = [
   ["/cosmonaut.gofundme.gofundme.MsgCreateGofundme", MsgCreateGofundme],
   ["/cosmonaut.gofundme.gofundme.MsgDonateFund", MsgDonateFund],
+  ["/cosmonaut.gofundme.gofundme.MsgWithdrawDonation", MsgWithdrawDonation],
   
 ];
 export const MissingWalletError = new Error("wallet is required");
@@ -45,6 +47,7 @@ const txClient = async (wallet: OfflineSigner, { addr: addr }: TxClientOptions =
     signAndBroadcast: (msgs: EncodeObject[], { fee, memo }: SignAndBroadcastOptions = {fee: defaultFee, memo: ""}) => client.signAndBroadcast(address, msgs, fee,memo),
     msgCreateGofundme: (data: MsgCreateGofundme): EncodeObject => ({ typeUrl: "/cosmonaut.gofundme.gofundme.MsgCreateGofundme", value: MsgCreateGofundme.fromPartial( data ) }),
     msgDonateFund: (data: MsgDonateFund): EncodeObject => ({ typeUrl: "/cosmonaut.gofundme.gofundme.MsgDonateFund", value: MsgDonateFund.fromPartial( data ) }),
+    msgWithdrawDonation: (data: MsgWithdrawDonation): EncodeObject => ({ typeUrl: "/cosmonaut.gofundme.gofundme.MsgWithdrawDonation", value: MsgWithdrawDonation.fromPartial( data ) }),
     
   };
 };

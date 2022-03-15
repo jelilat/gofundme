@@ -30,6 +30,8 @@ export type GofundmeMsgCreateGofundmeResponse = object;
 
 export type GofundmeMsgDonateFundResponse = object;
 
+export type GofundmeMsgWithdrawDonationResponse = object;
+
 /**
  * Params defines the parameters for the module.
  */

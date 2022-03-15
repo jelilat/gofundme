@@ -34,9 +34,9 @@ func (k msgServer) DonateFund(goCtx context.Context, msg *types.MsgDonateFund) (
 	}
 
 	//Get the donor's address
-	donator, err := sdk.AccAddressFromBech32(msg.Creator)
+	donor, err := sdk.AccAddressFromBech32(msg.Creator)
 	if err != nil {
-		return nil, sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, "invalid donor address (%s)", donator)
+		return nil, sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, "invalid donor address (%s)", donor)
 	}
 	//Get the donation amount
 	donation, _ := sdk.ParseCoinsNormalized(msg.Donation)
@@ -52,7 +52,7 @@ func (k msgServer) DonateFund(goCtx context.Context, msg *types.MsgDonateFund) (
 	gofundme.Totaldonations += donation[0].Amount.Uint64()
 
 	//Use the module account as an escrow account
-	sdkError := k.bankKeeper.SendCoinsFromAccountToModule(ctx, donator, types.ModuleName, donation)
+	sdkError := k.bankKeeper.SendCoinsFromAccountToModule(ctx, donor, types.ModuleName, donation)
 	if sdkError != nil {
 		return nil, sdkError
 	}

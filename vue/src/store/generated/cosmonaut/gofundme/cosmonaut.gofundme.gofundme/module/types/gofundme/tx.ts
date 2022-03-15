@@ -21,6 +21,13 @@ export interface MsgDonateFund {
 
 export interface MsgDonateFundResponse {}
 
+export interface MsgWithdrawDonation {
+  creator: string;
+  id: number;
+}
+
+export interface MsgWithdrawDonationResponse {}
+
 const baseMsgCreateGofundme: object = {
   creator: "",
   goal: 0,
@@ -311,13 +318,143 @@ export const MsgDonateFundResponse = {
   },
 };
 
+const baseMsgWithdrawDonation: object = { creator: "", id: 0 };
+
+export const MsgWithdrawDonation = {
+  encode(
+    message: MsgWithdrawDonation,
+    writer: Writer = Writer.create()
+  ): Writer {
+    if (message.creator !== "") {
+      writer.uint32(10).string(message.creator);
+    }
+    if (message.id !== 0) {
+      writer.uint32(16).uint64(message.id);
+    }
+    return writer;
+  },
+
+  decode(input: Reader | Uint8Array, length?: number): MsgWithdrawDonation {
+    const reader = input instanceof Uint8Array ? new Reader(input) : input;
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = { ...baseMsgWithdrawDonation } as MsgWithdrawDonation;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.creator = reader.string();
+          break;
+        case 2:
+          message.id = longToNumber(reader.uint64() as Long);
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): MsgWithdrawDonation {
+    const message = { ...baseMsgWithdrawDonation } as MsgWithdrawDonation;
+    if (object.creator !== undefined && object.creator !== null) {
+      message.creator = String(object.creator);
+    } else {
+      message.creator = "";
+    }
+    if (object.id !== undefined && object.id !== null) {
+      message.id = Number(object.id);
+    } else {
+      message.id = 0;
+    }
+    return message;
+  },
+
+  toJSON(message: MsgWithdrawDonation): unknown {
+    const obj: any = {};
+    message.creator !== undefined && (obj.creator = message.creator);
+    message.id !== undefined && (obj.id = message.id);
+    return obj;
+  },
+
+  fromPartial(object: DeepPartial<MsgWithdrawDonation>): MsgWithdrawDonation {
+    const message = { ...baseMsgWithdrawDonation } as MsgWithdrawDonation;
+    if (object.creator !== undefined && object.creator !== null) {
+      message.creator = object.creator;
+    } else {
+      message.creator = "";
+    }
+    if (object.id !== undefined && object.id !== null) {
+      message.id = object.id;
+    } else {
+      message.id = 0;
+    }
+    return message;
+  },
+};
+
+const baseMsgWithdrawDonationResponse: object = {};
+
+export const MsgWithdrawDonationResponse = {
+  encode(
+    _: MsgWithdrawDonationResponse,
+    writer: Writer = Writer.create()
+  ): Writer {
+    return writer;
+  },
+
+  decode(
+    input: Reader | Uint8Array,
+    length?: number
+  ): MsgWithdrawDonationResponse {
+    const reader = input instanceof Uint8Array ? new Reader(input) : input;
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = {
+      ...baseMsgWithdrawDonationResponse,
+    } as MsgWithdrawDonationResponse;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(_: any): MsgWithdrawDonationResponse {
+    const message = {
+      ...baseMsgWithdrawDonationResponse,
+    } as MsgWithdrawDonationResponse;
+    return message;
+  },
+
+  toJSON(_: MsgWithdrawDonationResponse): unknown {
+    const obj: any = {};
+    return obj;
+  },
+
+  fromPartial(
+    _: DeepPartial<MsgWithdrawDonationResponse>
+  ): MsgWithdrawDonationResponse {
+    const message = {
+      ...baseMsgWithdrawDonationResponse,
+    } as MsgWithdrawDonationResponse;
+    return message;
+  },
+};
+
 /** Msg defines the Msg service. */
 export interface Msg {
   CreateGofundme(
     request: MsgCreateGofundme
   ): Promise<MsgCreateGofundmeResponse>;
-  /** this line is used by starport scaffolding # proto/tx/rpc */
   DonateFund(request: MsgDonateFund): Promise<MsgDonateFundResponse>;
+  /** this line is used by starport scaffolding # proto/tx/rpc */
+  WithdrawDonation(
+    request: MsgWithdrawDonation
+  ): Promise<MsgWithdrawDonationResponse>;
 }
 
 export class MsgClientImpl implements Msg {
@@ -348,6 +485,20 @@ export class MsgClientImpl implements Msg {
     );
     return promise.then((data) =>
       MsgDonateFundResponse.decode(new Reader(data))
+    );
+  }
+
+  WithdrawDonation(
+    request: MsgWithdrawDonation
+  ): Promise<MsgWithdrawDonationResponse> {
+    const data = MsgWithdrawDonation.encode(request).finish();
+    const promise = this.rpc.request(
+      "cosmonaut.gofundme.gofundme.Msg",
+      "WithdrawDonation",
+      data
+    );
+    return promise.then((data) =>
+      MsgWithdrawDonationResponse.decode(new Reader(data))
     );
   }
 }
