@@ -138,7 +138,7 @@ The user needs a certain amount of funds and is requesting donations from other 
 
 The first message is the `create-gofundme` message, which requires the following input parameters:
 
-* `goal`: The amount of funds the cosmonaut is requesting
+* `goal`: The amount of funds the user is requesting
 * `start`: The start date of the gofundme campaign
 * `end`: The end date of the gofundme campaign
 
@@ -465,6 +465,7 @@ import (
 func (k msgServer) WithdrawDonation(goCtx context.Context, msg *types.MsgWithdrawDonation) (*types.MsgWithdrawDonationResponse, error) {
 	ctx := sdk.UnwrapSDKContext(goCtx)
 
+    //Get the gofundme campaign with the given id
 	gofundme, found := k.GetGofundme(ctx, msg.Id)
 	if !found {
 		return nil, sdkerrors.Wrapf(sdkerrors.ErrKeyNotFound, "gofundme with id %s not found", msg.Id)
@@ -476,9 +477,14 @@ func (k msgServer) WithdrawDonation(goCtx context.Context, msg *types.MsgWithdra
 	}
 
 	//Get the end date
-	_, err := sdk.ParseTimeBytes([]byte(gofundme.End))
+	end, err := sdk.ParseTimeBytes([]byte(gofundme.End))
 	if err != nil {
 		return nil, sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, "Can't withdraw donations until the end of the gofundme campaign.")
+	}
+
+	//Check whether the current time is after the end date
+	if ctx.BlockTime().Before(end) {
+		return nil, sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, "gofundme campaign is not over. Please wait until the end date")
 	}
 
 	//Get gofundme creator and message sender
@@ -498,6 +504,7 @@ func (k msgServer) WithdrawDonation(goCtx context.Context, msg *types.MsgWithdra
 	}
 
 	if creator.Equals(messageSender) && totalDonations >= goal {
+        //update claim to yes
 		gofundme.Claim = "yes"
 		sdkError := k.bankKeeper.SendCoinsFromModuleToAccount(ctx, types.ModuleName, creator, normalizedTotalDonation)
 		if sdkError != nil {

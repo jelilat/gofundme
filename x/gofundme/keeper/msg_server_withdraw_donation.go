@@ -14,6 +14,7 @@ import (
 func (k msgServer) WithdrawDonation(goCtx context.Context, msg *types.MsgWithdrawDonation) (*types.MsgWithdrawDonationResponse, error) {
 	ctx := sdk.UnwrapSDKContext(goCtx)
 
+	//Get the gofundme campaign with the given id
 	gofundme, found := k.GetGofundme(ctx, msg.Id)
 	if !found {
 		return nil, sdkerrors.Wrapf(sdkerrors.ErrKeyNotFound, "gofundme with id %s not found", msg.Id)
@@ -25,9 +26,14 @@ func (k msgServer) WithdrawDonation(goCtx context.Context, msg *types.MsgWithdra
 	}
 
 	//Get the end date
-	_, err := sdk.ParseTimeBytes([]byte(gofundme.End))
+	end, err := sdk.ParseTimeBytes([]byte(gofundme.End))
 	if err != nil {
-		return nil, sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, "Can't withdraw donations until the end of the gofundme campaign.")
+		return nil, sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, err.Error())
+	}
+
+	//Check whether the current time is after the end date
+	if ctx.BlockTime().Before(end) {
+		return nil, sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, "gofundme campaign is not over. Please wait until the end date")
 	}
 
 	//Get gofundme creator and message sender
