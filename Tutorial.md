@@ -4,9 +4,9 @@ As blockchain technology gains more popularity and increases in adoption, it ope
 
 More people are openly funding open-source projects and it’s easier than ever for builders to receive funding for their projects from across the globe irrespective of their location. This is something that is almost impossible with the traditional crowdfunding platforms.
 
-In this tutorial, you will learn some basic crowdfunding model and use Starport to build a crowdfunding module of your own.
+In this tutorial, you will learn some basic crowdfunding model and use [Starport](https://starport.com/) to build a crowdfunding module of your own. Your crowdfunding module will enable users create a crowdfunding campaign, pledge a donation, claim the donations if the goal is met, and also get refunds if the campaign's goal is not met.
 
-**You will learn how to**
+**By the end of this tutorial, you will be able to:**
 
 * Scaffold a blockchain
 * Scaffold a Cosmos SDK crowdfund module
@@ -21,9 +21,25 @@ In this tutorial, you will learn some basic crowdfunding model and use Starport 
 
 **Note:** *The code in this tutorial is written specifically for this learning experience and is intended only for educational purposes. This tutorial code is not intended to be used in production.*
 
+## Prerequisites
+
+* **Golang**: Make sure you have Golang installed on your machine. if you don't already have it, you can install it by following the instructions [here](https://golang.org/doc/install). 
+
+	You also need to be familiar with Golang syntax to follow along with this tutorial.
+* **Starport**: The Starport CLI is responsible for scaffolding the blockchain and the crowdfund module. If you don't already have Starport installed, you can run the folloowing command in your terminal.
+
+	```
+	$ curl https://get.starport.com/starport! | bash
+	```
+	In case you encounter any errors during the installation, you can find a detailed installation guide [here](https://docs.starport.com/guide/install.html).
+
+Now that you are fully setup with the prerequisites, you can proceed to the next section.
+
 ## Module Design
 
-A crowdfunding campaign consists of: 
+Before going into the actual tutorial, let's take a look at the design of the crowdfund module.
+
+The crowdfunding campaign consists of: 
 
 * An `id`
 * The `goal` of the campaign
@@ -55,7 +71,9 @@ A Donor donates to a crowdfunding campaign with the following information:
 
 If the goal of the campaign is not met before the `end` date, the `Donor`s can withdraw their `donation`s from the campaign.
 
-## Scaffold the Blockchain
+Great! Now let's get started with the actual implementation.
+
+## Scaffold the Blockchain 
 
 Use Starport to scaffold a fully functional Cosmos SDK blockchain app named `gofundme`.
 
@@ -70,7 +88,7 @@ Go into the newly created `gofundme` directory:
 ```golang
 cd gofundme
 ``` 
-## Scaffold the Module
+## Building a Blockchain Module
 
 Scaffold the module to create a new `gofundme` module. Following the Cosmos SDK convention, all modules are scaffolded inside the `x` directory:
 
